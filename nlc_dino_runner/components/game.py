@@ -106,6 +106,9 @@ class Game:
 
         text, text_rect = text_utils.get_centered_message("Press any key to start")
         self.screen.blit(text, text_rect)
+
         death_score, death_score_rect = text_utils.get_centered_message("Death Count: " + str(self.death_count), height =half_screen_height +50)
         self.screen.blit( death_score, death_score_rect)
+        yourscore, yourscore_rect = text_utils.get_centered_message("Your score:" + str(self.points), height =  half_screen_height + 100)
+        self.screen.blit( yourscore, yourscore_rect)
         self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, (half_screen_height )- 150))
