@@ -63,6 +63,7 @@ class Game:
             self.game_speed += 1
         score_element, score_element_rect = text_utils.get_score_element(self.points)
         self.screen.blit(score_element, score_element_rect)
+        self.player.check_invincibility(self.screen)
 
     def draw_background(self):
         image_width = BG.get_width()
@@ -104,16 +105,21 @@ class Game:
     def print_menu_elements(self):
         half_screen_height = SCREEN_HEIGHT // 2
 
-        death_score, death_score_rect = text_utils.get_centered_message("Death Count: " + str(self.death_count), height =half_screen_height +50)
-        self.screen.blit( death_score, death_score_rect)
-        yourscore, yourscore_rect = text_utils.get_centered_message("Your score:" + str(self.points), height =  half_screen_height + 100)
-        self.screen.blit( yourscore, yourscore_rect)
-        self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, (half_screen_height )- 150))
-        if self.death_count >= 1 :
-            text, text_rect = text_utils.get_centered_message("Press any key to restart")
-            self.screen.blit(text, text_rect)
-        else:
+        if self.death_count == 0:
             text, text_rect = text_utils.get_centered_message("Press any key to start")
             self.screen.blit(text, text_rect)
+        elif self.death_count > 0:
+              death_score, death_score_rect = text_utils.get_centered_message("Death Count: " + str(self.death_count), height =half_screen_height +50)
+              self.screen.blit( death_score, death_score_rect)
+              score, score_rect = text_utils.get_centered_message("Your score:" + str(self.points), height =  half_screen_height + 100)
+              self.screen.blit( score, score_rect)
+              text, text_rect = text_utils.get_centered_message("Press any key to restart")
+              self.screen.blit(text, text_rect)
+
+        self.screen.blit(ICON, ((SCREEN_WIDTH // 2) - 40, (half_screen_height )- 150))
+
+
+
+
 
 
