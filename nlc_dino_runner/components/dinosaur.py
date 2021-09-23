@@ -1,15 +1,21 @@
 import pygame
+from nlc_dino_runner.components.hammer import Hammer
 from nlc_dino_runner.utils.text_utils import get_centered_message
 from pygame.sprite import Sprite
 from nlc_dino_runner.utils.constants import (
     RUNNING,
     DUCKING,
     JUMPING,
+    HAMMER,
     RUNNING_SHIELD,
     DUCKING_SHIELD,
     JUMPING_SHIELD,
+    RUNNING_HAMMER,
+    DUCKING_HAMMER,
+    JUMPING_HAMMER,
     DEFAULT_TYPE,
-    SHIELD_TYPE
+    SHIELD_TYPE,
+    HAMMER_TYPE
 )
 
 
@@ -22,18 +28,22 @@ class Dinosaur(Sprite):
     def __init__(self):
         self.run_img = {
                          DEFAULT_TYPE: RUNNING,
-                         SHIELD_TYPE: RUNNING_SHIELD
+                         SHIELD_TYPE: RUNNING_SHIELD,
+                         HAMMER_TYPE: RUNNING_HAMMER
         }
         self.jump_img = {
                          DEFAULT_TYPE: JUMPING,
-                         SHIELD_TYPE: JUMPING_SHIELD
+                         SHIELD_TYPE: JUMPING_SHIELD,
+                         HAMMER_TYPE: JUMPING_HAMMER
         }
         self.duck_img = {
                          DEFAULT_TYPE: DUCKING,
-                         SHIELD_TYPE: DUCKING_SHIELD
+                         SHIELD_TYPE: DUCKING_SHIELD,
+                         HAMMER_TYPE: DUCKING_HAMMER
         }
         self.type = DEFAULT_TYPE
         self.image = self.run_img[self.type][0]
+        self.hammer_image = HAMMER
         self.shield = False
         self.shield_time_up = 0
         self.show_text = False
@@ -45,6 +55,10 @@ class Dinosaur(Sprite):
         self.dino_duck = False
         self.dino_jump = False
         self.jump_vel = self.JUMP_VEL
+        self.hammer = None
+        self.hammer_available = False
+        self.hammer_time_up = 0
+        self.show_hammer_text = False
 
     def update(self, user_input):
         if self.dino_jump:
@@ -66,6 +80,13 @@ class Dinosaur(Sprite):
             self.dino_run = True
             self.dino_duck = False
             self.dino_jump = False
+        if user_input[pygame.K_SPACE] and self.hammer_available:
+            self.hammer = Hammer(self.dino_rect.x, self.dino_rect.y)
+            self.hammer_available = False
+            self.type = DEFAULT_TYPE
+
+        if self.hammer:
+            self.hammer.update()
 
         if self.step_index >= 10:
             self.step_index = 0
@@ -96,14 +117,13 @@ class Dinosaur(Sprite):
 
     def check_invincibility(self, screen):
         if self.shield:
-            time_to_show = round((self.shield_time_up - pygame.time.get_ticks()) // 1000, 3)
+            time_to_show = round((self.shield_time_up - pygame.time.get_ticks()) / 1000, 2)
 
             if time_to_show < 0:
                 self.shield = False
-                if self.shield == SHIELD_TYPE:
-                    self.type = DEFAULT_TYPE
+                self.type = DEFAULT_TYPE
             else:
-                if self.show_text:
+                if self.show_text and self.type == SHIELD_TYPE:
                     text, text_rect = get_centered_message(
                         f'Shield enable for {time_to_show}',
                         width=500,
@@ -111,5 +131,33 @@ class Dinosaur(Sprite):
                         size=20
                     )
                     screen.blit(text, text_rect)
+                else:
+                    text, text_rect = get_centered_message(
+                        f'Shield enable for {time_to_show}',
+                        width=500,
+                        height=100,
+                        size=20
+                    )
+                    screen.blit(text, text_rect)
+
+    def check_hammer(self,screen):
+        if self.hammer_available:
+            time_to_show =round((self.shield_time_up - pygame.time.get_ticks()) / 1000, 2)
+            if time_to_show < 0:
+                self.hammer_available = False
+                if self.type == HAMMER_TYPE:
+                    self.type = DEFAULT_TYPE
+                else:
+                    if self.show_hammer_text and self.type == HAMMER_TYPE:
+                        text, text_rect = get_centered_message(
+                            f'Hammer enable for {time_to_show}',
+                            width=500,
+                            height=100,
+                            size=20
+                        )
+                        screen.blit(text, text_rect)
+
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        if self.hammer:
+            self.hammer.draw(screen)

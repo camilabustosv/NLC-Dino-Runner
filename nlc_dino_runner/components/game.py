@@ -7,6 +7,7 @@ from nlc_dino_runner.components.dinosaur import Dinosaur
 from nlc_dino_runner.components.obstacles.obstaclesManager import ObstaclesManager
 from nlc_dino_runner.utils import text_utils
 from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_WIDTH, SCREEN_HEIGHT, BG, FPS
+from nlc_dino_runner.components.hammer import Hammer
 
 
 class Game:
@@ -70,6 +71,7 @@ class Game:
         score_element, score_element_rect = text_utils.get_score_element(self.points)
         self.screen.blit(score_element, score_element_rect)
         self.player.check_invincibility(self.screen)
+        #self.player.check_hammer(self.screen)
 
     def draw_background(self):
         image_width = BG.get_width()
