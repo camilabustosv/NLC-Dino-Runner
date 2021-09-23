@@ -1,4 +1,6 @@
 import pygame
+
+from nlc_dino_runner.components.hammer import Hammer
 from nlc_dino_runner.components.obstacles.cactus import Cactus
 from nlc_dino_runner.utils.constants import SMALL_CACTUS
 
@@ -22,11 +24,14 @@ class ObstaclesManager:
                         game.live_manager.reduce_lives()
                         game.player.shield = True
                         start_time = pygame.time.get_ticks()
+                        game.player.shield_time_up = start_time + 1000
                     else:
                         pygame.time.delay(1000)
                         game.playing = False
                         game.death_count += 1
                         break
+            elif game.player.hammer and game.player.hammer.rect.colliderect(obstacle.rect):
+                self.obstacles_list.remove(obstacle)
 
     def draw(self, screen):
         for obstacle in self.obstacles_list:

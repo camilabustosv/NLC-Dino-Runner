@@ -4,12 +4,12 @@ from nlc_dino_runner.utils.constants import HAMMER
 
 class Hammer(Sprite):
 
-    def __init__(self, rect_x, rect_y):
+    def __init__(self, x_pos, y_pos):
         Sprite.__init__(self)
         self.image = HAMMER
         self.rect = self.image.get_rect()
-        self.rect.x = rect_x
-        self.rect.y = rect_y
+        self.rect.x = x_pos
+        self.rect.y = y_pos
         self.hammer_speed = 4
 
     def update(self):
