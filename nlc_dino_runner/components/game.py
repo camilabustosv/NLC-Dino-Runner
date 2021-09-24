@@ -6,7 +6,7 @@ from nlc_dino_runner.components.powerups.power_up_manager import PowerUpManager
 from nlc_dino_runner.components.dinosaur import Dinosaur
 from nlc_dino_runner.components.obstacles.obstaclesManager import ObstaclesManager
 from nlc_dino_runner.utils import text_utils
-from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_WIDTH, SCREEN_HEIGHT, BG, FPS
+from nlc_dino_runner.utils.constants import TITLE, ICON, SCREEN_WIDTH, SCREEN_HEIGHT, BG, FPS, CLOUD
 
 
 class Game:
@@ -48,7 +48,7 @@ class Game:
     def update(self):
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
-        self.obstacle_manager.update(self)
+        self.obstacle_manager.update(self, self.screen)
         self.power_up_manager.update(self.points, self.game_speed, self.player)
 
     def draw(self):
@@ -56,6 +56,7 @@ class Game:
         self.screen.fill((255, 255, 255))
         self.score()
         self.draw_background()
+        self.draw_sky()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.power_up_manager.draw(self.screen)
@@ -81,6 +82,16 @@ class Game:
         if self.x_pos_bg <= -image_width:
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
+    def draw_sky(self):
+        image_width = CLOUD.get_width()
+        self.screen.blit(CLOUD, (self.x_pos_bg + 1100, self.y_pos_bg-200))
+        self.screen.blit(CLOUD, (self.x_pos_bg, self.y_pos_bg))
+        if self.x_pos_bg > + image_width:
+            self.screen.blit(CLOUD, (self.x_pos_bg + 1100, self.y_pos_bg))
+            self.y_pos_bg = 0
+        self.x_pos_bg += self.game_speed -30
+
 
     def execute(self):
         while self.running :
